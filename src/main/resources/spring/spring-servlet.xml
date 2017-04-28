@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:jaxws="http://cxf.apache.org/jaxws" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd 
+			    		http://www.springframework.org/schema/context 
+			    		http://www.springframework.org/schema/context/spring-context.xsd 
+			    		http://www.springframework.org/schema/mvc 
+			    		http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+			    		http://www.springframework.org/schema/aop 
+			    		http://www.springframework.org/schema/aop/spring-aop.xsd 
+			    		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+			    		
+	<import resource="classpath:META-INF/cxf/cxf.xml"/>
+	<!-- <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/> -->
+    <import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+	
+	<context:component-scan base-package="com.zlp.soap"/>
+	<aop:aspectj-autoproxy />
+	
+	<!-- <mvc:annotation-driven enable-matrix-variables="true"/> -->
+	
+	<!-- 读入配置属性文件：(service层属性值注入不了) 因为在aop中的@Value注入不了值 -->
+	<context:property-placeholder location="classpath:service.properties" />
+	
+	<!-- 配置基于Session的处理,将提交上来的locale参数进行处理 -->  
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <!-- <property name="defaultLocale" value="en"/>  -->
+    </bean> 
+	<!-- 拦截器 --> 
+    <mvc:interceptors>  
+        <!-- <bean class="com.core.mvc.MyInteceptor" /> -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+              <!-- <property name="paramName" value="lang" /> -->
+        </bean>
+    </mvc:interceptors>
+      
+    <!-- 对静态资源文件的访问  方案一 （二选一）-->
+    <mvc:default-servlet-handler/> 
+      
+    <!-- 对静态资源文件的访问  方案二 （二选一） 
+    <mvc:resources mapping="/css/**" location="/css/" cache-period="31556926"/> 
+    <mvc:resources mapping="/js/**" location="/js/" cache-period="31556926"/>
+    <mvc:resources mapping="/images/**" location="/images/" cache-period="31556926"/> -->
+	
+	<!-- HandlerMapping 
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>  -->  
+	   
+	<!-- HandlerAdapter 
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>  --> 
+    
+    <!-- <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">  
+	    下面配置对json的支持 
+        <property name="mediaTypes">  
+            <map>  
+                <entry key="atom" value="application/atom+xml" />  
+                <entry key="html" value="text/html" />  
+                <entry key="json" value="application/json" />  
+            </map>  
+        </property>  
+    	<property name="viewResolvers">  
+            <list>  
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />  
+                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+                <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                <bean class="org.springframework.web.servlet.view.velocity.VelocityViewResolver"> 
+               
+                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+                	<property name="requestContextAttribute" value="ctx"/>
+                    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+                    <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>  
+                    <property name="prefix" value="/WEB-INF/page/" />  
+                    <property name="suffix" value="" />  
+                </bean>  
+            </list>  
+        </property>  
+        <property name="defaultViews">  
+            <list>  
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />  
+            </list>  
+        </property>  
+    </bean> -->
+    
+    <!-- thymeleaf 模版引擎解析器 
+    thymeleaf2.0: org.thymeleaf.templateresolver.ServletContextTemplateResolver
+    thymeleaf3.0: org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver"-->
+    <!-- <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+	  <property name="prefix" value="/WEB-INF/page/" />
+	  <property name="suffix" value=".html" />
+	  <property name="templateMode" value="HTML5" />
+	  <property name="cacheable" value="false" />  
+	</bean> -->
+	
+	<!-- <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+		<property name="templateResolvers">
+            <set>
+                <ref bean="templateResolver" />
+            </set>
+        </property>
+	</bean> -->
+	
+    <!--
+    - The ContentNegotiatingViewResolver delegates to the InternalResourceViewResolver and BeanNameViewResolver,
+    - and uses the requested media type (determined by the path extension) to pick a matching view. 
+    - When the media type is 'text/html', it will delegate to the InternalResourceViewResolver's JstlView, 
+    - otherwise to the BeanNameViewResolver.
+    -->
+    <!-- <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="cnManager"/>
+        <property name="viewResolvers">
+        	<list>
+            
+                <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+                    <property name="templateEngine" ref="templateEngine" />
+                    <property name="order" value="1"/>
+                    <property name="excludedViewNames" value="*.xml" />
+                    <property name="characterEncoding" value="UTF-8"/> 
+                </bean>
+                
+        	</list>
+        </property>
+    </bean> -->
+    
+    <!-- Simple strategy: only path extension is taken into account -->
+    <bean id="cnManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="true"/>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="defaultContentType" value="text/html"/>
+        
+        <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html" />
+                <entry key="xml" value="application/xml" />
+                <entry key="atom" value="application/atom+xml" />
+                <entry key="json" value="application/json" /> 
+            </map>
+        </property>
+    </bean>
+    
+    <jaxws:endpoint implementor="#demoSoapService" address="${demo.soap.service.url}" />
+    
+</beans>
