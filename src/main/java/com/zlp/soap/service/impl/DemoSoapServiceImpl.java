@@ -53,5 +53,20 @@ public class DemoSoapServiceImpl implements DemoSoapService {
 		
 		return vo;
 	}
+	
+	@Override
+	public String sayHi(String name) {
+		log.info("--> hello, ", name);
+		String result = "hello, "+name;
+		return result;
+	}
+	
+	@Override
+	public AbstractResultVO test() {
+		log.info("--> test");
+		AbstractResultVO vo  = ResultFactory.createSucessResult();
+		vo.setMessage("test.");
+		return vo;
+	}
 
 }

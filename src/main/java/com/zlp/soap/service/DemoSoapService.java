@@ -24,4 +24,8 @@ public interface DemoSoapService {
 								   @WebParam(name="token") String token, 
 								   @WebParam(name="body") String body);
 	
+	String sayHi(@WebParam(name="name") String name);
+	
+	AbstractResultVO test();
+	
 }
