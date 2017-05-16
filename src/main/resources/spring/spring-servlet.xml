@@ -143,6 +143,18 @@
         </property>
     </bean>
     
-    <jaxws:endpoint implementor="#demoSoapService" address="${demo.soap.service.url}" />
+    <bean id="basicAuthAuthorizationInterceptor" class="com.zlp.soap.interceptor.BasicAuthAuthorizationInterceptor">
+    	<property name="users">
+    		<map>
+    			<entry key="qqtzlp" value="51qqt.com"/>
+    		</map>
+    	</property>
+    </bean>
+    
+    <jaxws:endpoint implementor="#demoSoapService" address="${demo.soap.service.url}">
+    	<jaxws:inInterceptors>
+    		<ref bean="basicAuthAuthorizationInterceptor"/>
+    	</jaxws:inInterceptors>
+    </jaxws:endpoint>
     
 </beans>

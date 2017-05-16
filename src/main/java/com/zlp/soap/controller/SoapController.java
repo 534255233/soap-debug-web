@@ -88,7 +88,7 @@ public class SoapController extends BaseController {
 		headers.put("Accept", "text/xml");
 		httpClient.addHeaders(headers);
 		
-		httpClient.setUrl("http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT_SERVICE?sap-client=620&wsdl=1.1");
+		httpClient.setUrl("http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT?sap-client=620&wsdl=1.1");
 		httpClient.setMethodName("ZsrmMatnrOut");
 		String params = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">";
 		params += "<soapenv:Header/>"; 

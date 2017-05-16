@@ -26,7 +26,6 @@ import org.w3c.dom.Document;
 
 import com.qqt.controller.BaseController;
 import com.qqt.service.server.ClientAddAuthInInterceptor;
-import com.sap.document.sap.soap.functions.mc_style.TableOfZsrmMatnrS;
 
 /**
  * 
@@ -53,16 +52,16 @@ public class TestController extends BaseController {
 		
 		try {
 			JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-			Client client = dcf.createClient("http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT_SERVICE?sap-client=620&wsdl=1.1");
+			Client client = dcf.createClient("http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT?sap-client=620&wsdl=1.1");
 			client.getOutInterceptors().add(new ClientAddAuthInInterceptor());
 
 			if (client != null) {
 				System.out.println("client Interceptors: " + client.getInInterceptors().size());
 			}
 			
-			TableOfZsrmMatnrS table = new TableOfZsrmMatnrS();
+//			TableOfZsrmMatnrS table = new TableOfZsrmMatnrS();
 
-			Object[] res = client.invoke("ZsrmMatnrOut", "2017-03-16", "", table);
+			Object[] res = client.invoke("ZsrmMatnrOut", "2017-03-16", "", null);
 			
 			log.info("--> response = {}", res.toString());
 			
@@ -83,7 +82,7 @@ public class TestController extends BaseController {
 		
 		try {
 			JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-			Client client = dcf.createClient("http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT_SERVICE?wsdl=1.1");
+			Client client = dcf.createClient("http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT?wsdl=1.1");
 			client.getOutInterceptors().add(new ClientAddAuthInInterceptor());
 
 			if (client != null) {
@@ -112,7 +111,7 @@ public class TestController extends BaseController {
 		String result = null;
 		try {
 			 String ns = "urn:sap-com:document:sap:soap:functions:mc-style";  
-	         String wsdlUrl = "http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUT_SERVICE?sap-client=620&wsdl=1.1";  
+	         String wsdlUrl = "http://10.1.1.60:8000/sap/bc/srt/rfc/sap/ZSRM_MATNR_OUTE?sap-client=620&wsdl=1.1";  
 	         //1、创建服务(Service)  
 	         URL url = new URL(wsdlUrl);  
 	         QName sname = new QName(ns,"ZSRM_MATNR_OUTService");  
