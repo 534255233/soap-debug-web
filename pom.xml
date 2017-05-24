@@ -17,13 +17,13 @@
   	<dependency>
 		<groupId>qqt</groupId>
 		<artifactId>abstract-web</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</dependency>
 	
 	<dependency>
  		<groupId>qqt</groupId>
 		<artifactId>service-client</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.0-SNAPSHOT</version>
  	</dependency>
 	
 	<dependency>
