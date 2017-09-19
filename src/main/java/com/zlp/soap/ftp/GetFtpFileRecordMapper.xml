@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.els.dao.GetFtpFileRecordMapper" >
+    <resultMap id="BaseResultMap" type="com.els.vo.GetFtpFileRecord" >
+        <id column="fileId" property="fileId" jdbcType="VARCHAR" />
+        <result column="fileName" property="fileName" jdbcType="VARCHAR" />
+        <result column="fileSize" property="fileSize" jdbcType="INTEGER" />
+        <result column="storePath" property="storePath" jdbcType="VARCHAR" />
+        <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="requestBeginTime" property="requestBeginTime" jdbcType="TIMESTAMP" />
+        <result column="requestEndTime" property="requestEndTime" jdbcType="TIMESTAMP" />
+        <result column="requestFailTimes" property="requestFailTimes" jdbcType="INTEGER" />
+        <result column="errorMessage" property="errorMessage" jdbcType="VARCHAR" />
+        <result column="uploadAliyunStatus" property="uploadAliyunStatus" jdbcType="VARCHAR" />
+        <result column="aliyunOssRequestId" property="aliyunOssRequestId" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        fileId, fileName, fileSize, storePath, createTime, requestBeginTime, requestEndTime, 
+        requestFailTimes, errorMessage, uploadAliyunStatus, aliyunOssRequestId, status
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from els_get_ftp_file_record
+        where fileId = #{fileId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from els_get_ftp_file_record
+        where fileId = #{fileId,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="com.els.vo.GetFtpFileRecord" >
+        insert into els_get_ftp_file_record (fileId, fileName, fileSize, 
+            storePath, createTime, requestBeginTime, 
+            requestEndTime, requestFailTimes, errorMessage, 
+            uploadAliyunStatus, aliyunOssRequestId, 
+            status)
+        values (#{fileId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{fileSize,jdbcType=INTEGER}, 
+            #{storePath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{requestBeginTime,jdbcType=TIMESTAMP}, 
+            #{requestEndTime,jdbcType=TIMESTAMP}, #{requestFailTimes,jdbcType=INTEGER}, #{errorMessage,jdbcType=VARCHAR}, 
+            #{uploadAliyunStatus,jdbcType=VARCHAR}, #{aliyunOssRequestId,jdbcType=VARCHAR}, 
+            #{status,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.els.vo.GetFtpFileRecord" >
+        insert into els_get_ftp_file_record
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="fileId != null" >
+                fileId,
+            </if>
+            <if test="fileName != null" >
+                fileName,
+            </if>
+            <if test="fileSize != null" >
+                fileSize,
+            </if>
+            <if test="storePath != null" >
+                storePath,
+            </if>
+            <if test="createTime != null" >
+                createTime,
+            </if>
+            <if test="requestBeginTime != null" >
+                requestBeginTime,
+            </if>
+            <if test="requestEndTime != null" >
+                requestEndTime,
+            </if>
+            <if test="requestFailTimes != null" >
+                requestFailTimes,
+            </if>
+            <if test="errorMessage != null" >
+                errorMessage,
+            </if>
+            <if test="uploadAliyunStatus != null" >
+                uploadAliyunStatus,
+            </if>
+            <if test="aliyunOssRequestId != null" >
+                aliyunOssRequestId,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="fileId != null" >
+                #{fileId,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null" >
+                #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileSize != null" >
+                #{fileSize,jdbcType=INTEGER},
+            </if>
+            <if test="storePath != null" >
+                #{storePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="requestBeginTime != null" >
+                #{requestBeginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="requestEndTime != null" >
+                #{requestEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="requestFailTimes != null" >
+                #{requestFailTimes,jdbcType=INTEGER},
+            </if>
+            <if test="errorMessage != null" >
+                #{errorMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="uploadAliyunStatus != null" >
+                #{uploadAliyunStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="aliyunOssRequestId != null" >
+                #{aliyunOssRequestId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.els.vo.GetFtpFileRecord" >
+        update els_get_ftp_file_record
+        <set >
+            <if test="fileName != null" >
+                fileName = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileSize != null" >
+                fileSize = #{fileSize,jdbcType=INTEGER},
+            </if>
+            <if test="storePath != null" >
+                storePath = #{storePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                createTime = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="requestBeginTime != null" >
+                requestBeginTime = #{requestBeginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="requestEndTime != null" >
+                requestEndTime = #{requestEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="requestFailTimes != null" >
+                requestFailTimes = #{requestFailTimes,jdbcType=INTEGER},
+            </if>
+            <if test="errorMessage != null" >
+                errorMessage = #{errorMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="uploadAliyunStatus != null" >
+                uploadAliyunStatus = #{uploadAliyunStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="aliyunOssRequestId != null" >
+                aliyunOssRequestId = #{aliyunOssRequestId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where fileId = #{fileId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.els.vo.GetFtpFileRecord" >
+        update els_get_ftp_file_record
+        set fileName = #{fileName,jdbcType=VARCHAR},
+            fileSize = #{fileSize,jdbcType=INTEGER},
+            storePath = #{storePath,jdbcType=VARCHAR},
+            createTime = #{createTime,jdbcType=TIMESTAMP},
+            requestBeginTime = #{requestBeginTime,jdbcType=TIMESTAMP},
+            requestEndTime = #{requestEndTime,jdbcType=TIMESTAMP},
+            requestFailTimes = #{requestFailTimes,jdbcType=INTEGER},
+            errorMessage = #{errorMessage,jdbcType=VARCHAR},
+            uploadAliyunStatus = #{uploadAliyunStatus,jdbcType=VARCHAR},
+            aliyunOssRequestId = #{aliyunOssRequestId,jdbcType=VARCHAR},
+            status = #{status,jdbcType=VARCHAR}
+        where fileId = #{fileId,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

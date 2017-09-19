@@ -1,6 +1,8 @@
 package com.zlp.test;
 
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,6 +45,16 @@ public class TestDemo {
 		String[] p2 = pp.split(":");
 		System.out.println(p2[0]);
 		System.out.println(p2[1]);
+		
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		Date date = c.getTime();
+		System.out.println(date);
+		
+		
 	}
 
 }
