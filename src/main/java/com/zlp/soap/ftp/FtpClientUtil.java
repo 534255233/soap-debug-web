@@ -19,12 +19,14 @@ public class FtpClientUtil {
 	private static int port = 21;
 	private static String username = "SRM";
 	private static String password = "minosrm";
+	private static boolean isDeleteFtpFile = false;
 	
-	public FtpClientUtil(String host, int port, String username, String password) {
+	public FtpClientUtil(String host, int port, String username, String password, boolean isDeleteFtpFile) {
 		FtpClientUtil.host = host;
 		FtpClientUtil.port = port;
 		FtpClientUtil.username = username;
 		FtpClientUtil.password = password;
+		FtpClientUtil.isDeleteFtpFile = isDeleteFtpFile;
 	}
 	
 	public void connected() throws SocketException, IOException {
@@ -47,13 +49,38 @@ public class FtpClientUtil {
 	}
 	
 	public InputStream downloadFileByFileName(String fileName) throws IOException {
-		connected();
-		InputStream inputStream = ftp.retrieveFileStream(fileName);
-		return inputStream;
+		
+		try {
+			connected();
+			InputStream inputStream = ftp.retrieveFileStream(fileName);
+			return inputStream;
+		} catch(java.net.SocketException e) {
+			e.printStackTrace();
+			isConnected();
+		}
+		return null;
 	}
 	
 	public boolean isConnected() {
 		return ftp.isConnected();
+	}
+	
+	public void completeDownload() throws IOException {
+		ftp.completePendingCommand();
+	}
+	
+	public void deleteFtpFile(String pathname) throws IOException {
+		
+		if (isDeleteFtpFile) {
+			try {
+				connected();
+				ftp.deleteFile(pathname);
+			} catch(java.net.SocketException e) {
+				e.printStackTrace();
+				isConnected();
+			}
+		}
+		
 	}
 
 }

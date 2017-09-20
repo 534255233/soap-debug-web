@@ -15,6 +15,9 @@ public class AliyunOssFactory {
 	private static String accessKeyId = "wtiUZd71Qvb0zIsQ";
 	private static String accessKeySecret = "aOywWxrs9kc33CrhABv4f10gDqEttY";
 	private static String bucketName = "elsdocman";
+	private static String localFilePath = "E:\\temp\\";
+	private static boolean deleteLocalTempFile = false;
+	
 
 	static {
 		ResourceBundle rb = ResourceBundle.getBundle(CONF_FILE_NAME);
@@ -22,9 +25,11 @@ public class AliyunOssFactory {
 		accessKeyId = rb.getString("aliyun.oss.accessKeyId");
 		accessKeySecret = rb.getString("aliyun.oss.accessKeySecret");
 		bucketName = rb.getString("aliyun.oss.bucketName");
+		localFilePath = rb.getString("aliyun.oss.temp.file.path");
+		deleteLocalTempFile = Boolean.parseBoolean(rb.getString("aliyun.oss.del.temp.file"));
 	}
 	
-	private static AliyunOssUtil aliyunOssUtil = new AliyunOssUtil(endpoint, accessKeyId, accessKeySecret, bucketName);
+	private static AliyunOssUtil aliyunOssUtil = new AliyunOssUtil(endpoint, accessKeyId, accessKeySecret, bucketName, localFilePath, deleteLocalTempFile);
 	
 	public static AliyunOssUtil getAliyunOssUtil() {
 		return aliyunOssUtil;
