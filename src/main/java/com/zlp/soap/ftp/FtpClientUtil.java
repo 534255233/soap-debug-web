@@ -13,56 +13,44 @@ import org.apache.commons.net.ftp.FTPClient;
  */
 public class FtpClientUtil {
 	
-	private static FTPClient ftp = new FTPClient();
+	private FTPClient ftp = new FTPClient();
 	
-	private static String host = "srmftp.minotech.cn";
-	private static int port = 21;
-	private static String username = "SRM";
-	private static String password = "minosrm";
-	private static boolean isDeleteFtpFile = false;
+	private String host = "srmftp.minotech.cn";
+	private int port = 21;
+	private String username = "SRM";
+	private String password = "minosrm";
+	private boolean isDeleteFtpFile = false;
 	
-	public FtpClientUtil(String host, int port, String username, String password, boolean isDeleteFtpFile) {
-		FtpClientUtil.host = host;
-		FtpClientUtil.port = port;
-		FtpClientUtil.username = username;
-		FtpClientUtil.password = password;
-		FtpClientUtil.isDeleteFtpFile = isDeleteFtpFile;
+	public FtpClientUtil(String host, int port, String username, String password, boolean isDeleteFtpFile) throws SocketException, IOException {
+		this.host = host;
+		this.port = port;
+		this.username = username;
+		this.password = password;
+		this.isDeleteFtpFile = isDeleteFtpFile;
+		connected();
 	}
 	
 	public void connected() throws SocketException, IOException {
-		
-		if (!ftp.isConnected()) {
-			synchronized (ftp) {
-				if (!ftp.isConnected()) {
-					ftp.setConnectTimeout(5000);
-					ftp.setControlKeepAliveReplyTimeout(5000);
-					ftp.setControlKeepAliveTimeout(5000);
-					ftp.setDataTimeout(5000);
-					//
-					ftp.connect(host, port);
-					ftp.setSoTimeout(5000);
-					//
-					ftp.login(username, password);
-				}
-			}
-		}
+		ftp.setConnectTimeout(5000);
+		ftp.setControlKeepAliveReplyTimeout(5000);
+		ftp.setControlKeepAliveTimeout(5000);
+		ftp.setDataTimeout(5000);
+		ftp.connect(host, port);
+		ftp.setSoTimeout(5000);
+		ftp.login(username, password);
 	}
 	
 	public InputStream downloadFileByFileName(String fileName) throws IOException {
-		
-		try {
-			connected();
-			InputStream inputStream = ftp.retrieveFileStream(fileName);
-			return inputStream;
-		} catch(java.net.SocketException e) {
-			e.printStackTrace();
-			isConnected();
-		}
-		return null;
+		InputStream inputStream = ftp.retrieveFileStream(fileName);
+		return inputStream;
 	}
 	
 	public boolean isConnected() {
 		return ftp.isConnected();
+	}
+	
+	public void disconnect() throws IOException {
+		ftp.disconnect();
 	}
 	
 	public void completeDownload() throws IOException {
@@ -70,17 +58,9 @@ public class FtpClientUtil {
 	}
 	
 	public void deleteFtpFile(String pathname) throws IOException {
-		
 		if (isDeleteFtpFile) {
-			try {
-				connected();
-				ftp.deleteFile(pathname);
-			} catch(java.net.SocketException e) {
-				e.printStackTrace();
-				isConnected();
-			}
+			ftp.deleteFile(pathname);
 		}
-		
 	}
 
 }

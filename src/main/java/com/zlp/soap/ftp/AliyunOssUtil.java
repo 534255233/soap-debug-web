@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.ClientException;
@@ -22,48 +21,49 @@ import com.aliyun.oss.model.PutObjectResult;
  */
 public class AliyunOssUtil {
 	
-	private static String endpoint = "http://oss-cn-shenzhen.aliyuncs.com";
-	private static String accessKeyId = "wtiUZd71Qvb0zIsQ";
-	private static String accessKeySecret = "aOywWxrs9kc33CrhABv4f10gDqEttY";
-	private static String bucketName = "elsdocman";
-	private static String localTempFilePath = null;
-	private static boolean deleteLocalTempFile = false;
+//	private String endpoint = "http://oss-cn-shenzhen.aliyuncs.com";
+//	private String accessKeyId = "wtiUZd71Qvb0zIsQ";
+//	private String accessKeySecret = "aOywWxrs9kc33CrhABv4f10gDqEttY";
+	private String bucketName = "elsdocman";
+	private String localTempFilePath = null;
+	private boolean deleteLocalTempFile = false;
 	
 	
-	private static ClientConfiguration conf = new ClientConfiguration();
-	private static OSSClient ossClient = null;
+	private ClientConfiguration conf = new ClientConfiguration();
+	private OSSClient ossClient = null;
 	
 	public AliyunOssUtil(String endpoint, String accessKeyId, 
 			String accessKeySecret, String bucketName, 
 			String localTempFilePath, boolean deleteLocalTempFile) {
-		AliyunOssUtil.endpoint = endpoint;
-		AliyunOssUtil.accessKeyId = accessKeyId;
-		AliyunOssUtil.accessKeySecret = accessKeySecret;
-		AliyunOssUtil.bucketName = bucketName;
-		AliyunOssUtil.localTempFilePath = localTempFilePath;
-		AliyunOssUtil.deleteLocalTempFile = deleteLocalTempFile;
-		conf.setIdleConnectionTime(1000 * 60 * 6);//6分钟
-		Calendar c = Calendar.getInstance();
-		pretime =  c.getTime().getTime() / 1000;
+//		this.endpoint = endpoint;
+//		this.accessKeyId = accessKeyId;
+//		this.accessKeySecret = accessKeySecret;
+		this.bucketName = bucketName;
+		this.localTempFilePath = localTempFilePath;
+		this.deleteLocalTempFile = deleteLocalTempFile;
+		conf.setIdleConnectionTime(1000 * 60 * 5);//5分钟
+//		Calendar c = Calendar.getInstance();
+//		pretime =  c.getTime().getTime() / 1000;
+		ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret, conf);
 	}
 	
 	
-	private static long pretime = 0l;
+//	private long pretime = 0l;
 	
 	public String uploadFile(String fileId, InputStream inputStream) throws OSSException, ClientException, FileNotFoundException {
 		
-		Calendar c = Calendar.getInstance();
-		long nowtime =  c.getTime().getTime() / 1000;
-		
-		if ((nowtime - pretime) > 300 || ossClient == null) {//5分钟
-			synchronized(conf) {
-				if ((nowtime - pretime) > 300 || ossClient == null) {//5分钟
-					shutdown();
-					ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret, conf);
-					pretime =  c.getTime().getTime() / 1000;
-				}
-			}
-		}
+//		Calendar c = Calendar.getInstance();
+//		long nowtime =  c.getTime().getTime() / 1000;
+//		
+//		if ((nowtime - pretime) > 300 || ossClient == null) {//5分钟
+//			synchronized(conf) {
+//				if ((nowtime - pretime) > 300 || ossClient == null) {//5分钟
+//					shutdown();
+//					ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret, conf);
+//					pretime =  c.getTime().getTime() / 1000;
+//				}
+//			}
+//		}
 		
 		String fileName = fileId.substring(7, fileId.length());
 		
@@ -102,7 +102,7 @@ public class AliyunOssUtil {
 	    
 	    InputStream fileStream = new FileInputStream(file);
 	    
-	    System.err.println(fileId);
+	    System.err.println("oss fileId = "+fileId);
 		
 		PutObjectResult putObjectResult = ossClient.putObject(bucketName, fileId, fileStream, objectMetadata);
 		
@@ -126,7 +126,7 @@ public class AliyunOssUtil {
 		}
 	}
 	
-	private static String contentType(String FilenameExtension){  
+	private String contentType(String FilenameExtension){  
         if(FilenameExtension.equals("BMP")||FilenameExtension.equals("bmp")){return "image/bmp";}  
         if(FilenameExtension.equals("GIF")||FilenameExtension.equals("gif")){return "image/gif";}  
         if(FilenameExtension.equals("JPEG")||FilenameExtension.equals("jpeg")||  

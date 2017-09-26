@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
  */
 public class AliyunOssFactory {
 	
-	private final static String CONF_FILE_NAME = "aliyun_oss_conf";
+	private final static String CONF_FILE_NAME = "oss";
 
 	private static String endpoint = "http://oss-cn-shenzhen.aliyuncs.com";
 	private static String accessKeyId = "wtiUZd71Qvb0zIsQ";
@@ -29,10 +29,10 @@ public class AliyunOssFactory {
 		deleteLocalTempFile = Boolean.parseBoolean(rb.getString("aliyun.oss.del.temp.file"));
 	}
 	
-	private static AliyunOssUtil aliyunOssUtil = new AliyunOssUtil(endpoint, accessKeyId, accessKeySecret, bucketName, localFilePath, deleteLocalTempFile);
+//	private static AliyunOssUtil aliyunOssUtil = new AliyunOssUtil(endpoint, accessKeyId, accessKeySecret, bucketName, localFilePath, deleteLocalTempFile);
 	
 	public static AliyunOssUtil getAliyunOssUtil() {
-		return aliyunOssUtil;
+		return new AliyunOssUtil(endpoint, accessKeyId, accessKeySecret, bucketName, localFilePath, deleteLocalTempFile);
 	}
 
 }

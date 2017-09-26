@@ -1,5 +1,7 @@
 package com.zlp.soap.ftp;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.ResourceBundle;
 
 /**
@@ -9,7 +11,7 @@ import java.util.ResourceBundle;
  */
 public class FtpClientFactory {
 	
-	private final static String CONF_FILE_NAME = "ftp_server_conf";
+	private final static String CONF_FILE_NAME = "ftp";
 
 	private static String host = "srmftp.minotech.cn";
 	private static int port = 21;
@@ -27,10 +29,10 @@ public class FtpClientFactory {
 		isDeleteFtpFile = Boolean.parseBoolean(rb.getString("ftp.server.delete.file"));
 	}
 	
-	private static FtpClientUtil ftpClientUtil = new FtpClientUtil(host, port, username, password, isDeleteFtpFile);
+//	private static FtpClientUtil ftpClientUtil = new FtpClientUtil(host, port, username, password, isDeleteFtpFile);
 	
-	public static FtpClientUtil getFtpClientUtil() {
-		return ftpClientUtil;
+	public static FtpClientUtil getFtpClientUtil() throws SocketException, IOException {
+		return new FtpClientUtil(host, port, username, password, isDeleteFtpFile);
 	}
 
 }
