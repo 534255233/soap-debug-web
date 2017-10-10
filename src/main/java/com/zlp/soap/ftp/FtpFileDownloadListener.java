@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Queue;
@@ -138,6 +139,8 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 			log.error("sap file is empty.");
 			return;
 		}
+		
+		FtpFileListStore.add(items);
 
 		Runnable run = new Runnable() {
 			@Override
@@ -263,6 +266,7 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 
 			// 4.记下文件状态，同时删除FTP服务器的文件
 			if (fileDealSuccess) {
+				FtpFileListStore.remove(fileName);
 				log.info("file deal success. fileName = {}, fileId = {}", fileName, fileId);
 			} else {
 				log.info("file deal fail, fileName = {}, fileId = {}", fileName, fileId);
@@ -279,6 +283,22 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 		}
 	}
 
+	public void downloadOfflineFile() {
+		List<FileDownloadItem> items = FtpFileListStore.getAll();
+		downloadFile2(items);
+	}
+	
+	public void downloadOfflineFile(String ftpFileName, String ossFileId) {
+		FileDownloadItem fileDownloadItem = new FileDownloadItem();
+		fileDownloadItem.setFileId(ossFileId);
+		fileDownloadItem.setFileName(ftpFileName);
+		fileDownloadItem.setDownloadTimes(0);
+		fileDownloadItem.setNextDownloadTime(Calendar.getInstance().getTime().getTime()/1000);
+		
+		List<FileDownloadItem> items = new ArrayList<>();
+		items.add(fileDownloadItem);
+		downloadFile2(items);
+	}
 	
 
 //	private void downloadFile(List<FileDownloadItem> items) {
