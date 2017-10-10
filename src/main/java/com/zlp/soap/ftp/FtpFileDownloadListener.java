@@ -142,14 +142,14 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 		Runnable run = new Runnable() {
 			@Override
 			public void run() {
-				downloadFile(items);
+				downloadFile2(items);
 			}
 		};
 		new Thread(run).start();
 
 	}
-
-	private void downloadFile(List<FileDownloadItem> items) {
+	
+	private void downloadFile2(List<FileDownloadItem> items) {
 		// 1.连接FTP服务器
 		FtpClientUtil ftpClient = null;
 		try {
@@ -197,16 +197,20 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 			String fileName = item.getFileName();
 			log.info("begin download file from FTP server, fileName = {}, fileId = {}", fileName, fileId);
 
+			long fileLenth = 0l;
 			InputStream fileStream = null;
 			try {
+				fileLenth = ftpClient.fileLength(fileName);
 				fileStream = ftpClient.downloadFileByFileName(fileName);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 			boolean fileDealSuccess = false;
+			
+			log.info("FTP file length = {}", fileLenth);
 
-			if (fileStream == null) {
+			if (fileStream == null || fileLenth <= 0l) {
 				log.info("file not find in FTP server, fileName = {}, downloadTimes = {}", fileName,
 						item.getDownloadTimes());
 				item.setDownloadTimes(item.getDownloadTimes() + 1);
@@ -223,7 +227,7 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 
 				String requestId = null;
 				try {
-					requestId = aliyunOss.uploadFile(fileId, fileStream);
+					requestId = aliyunOss.uploadFile(fileStream, fileId, fileLenth);
 				} catch (OSSException e) {
 					e.printStackTrace();
 					log.error("uploadFile, {}", e);
@@ -274,5 +278,133 @@ public class FtpFileDownloadListener implements ApplicationContextAware {
 			log.error("关闭连接, {}", e);
 		}
 	}
+
+	
+
+//	private void downloadFile(List<FileDownloadItem> items) {
+//		// 1.连接FTP服务器
+//		FtpClientUtil ftpClient = null;
+//		try {
+//			ftpClient = FtpClientFactory.getFtpClientUtil();
+//		} catch (SocketException e) {
+//			e.printStackTrace();
+//			log.error("connected FTP server error.{}", e);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			log.error("connected FTP server error.{}", e);
+//		}
+//
+//		if (ftpClient == null || ftpClient.isConnected() == false) {
+//			log.error("FTP server not connected.");
+//			return;
+//		}
+//
+//		// 2.连接阿里云oss
+//		AliyunOssUtil aliyunOss = AliyunOssFactory.getAliyunOssUtil();
+//		if (aliyunOss == null) {
+//			log.error("aliyun oss not connected.");
+//			return;
+//		}
+//
+//		Queue<FileDownloadItem> queue = new ConcurrentLinkedQueue<>();
+//		for (FileDownloadItem item : items) {
+//			queue.offer(item);
+//		}
+//
+//		// 2.上传文件到阿里云oss
+//		FileDownloadItem item = null;
+//		while ((item = queue.poll()) != null) {
+//			long downloadTime = item.getNextDownloadTime();
+//
+//			Calendar c = Calendar.getInstance();
+//			long currentTime = c.getTime().getTime() / 1000;
+//
+//			// 3秒后再去FTP服务器拿文件
+//			if ((currentTime - downloadTime) < 6) {
+//				queue.offer(item);
+//				continue;
+//			}
+//
+//			String fileId = item.getFileId();
+//			String fileName = item.getFileName();
+//			log.info("begin download file from FTP server, fileName = {}, fileId = {}", fileName, fileId);
+//
+//			InputStream fileStream = null;
+//			try {
+//				fileStream = ftpClient.downloadFileByFileName(fileName);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//
+//			boolean fileDealSuccess = false;
+//
+//			if (fileStream == null) {
+//				log.info("file not find in FTP server, fileName = {}, downloadTimes = {}", fileName,
+//						item.getDownloadTimes());
+//				item.setDownloadTimes(item.getDownloadTimes() + 1);
+//				if (item.getDownloadTimes() < 10) {
+//					item.setNextDownloadTime(currentTime);
+//					queue.offer(item);
+//				} else if (item.getDownloadTimes() == 10) {
+//					item.setNextDownloadTime(currentTime + 600);
+//					queue.offer(item);
+//				}
+//			} else {
+//				log.info("begin upload file to aliyun. fileName = {}, downloadTimes = {}", fileName,
+//						item.getDownloadTimes());
+//
+//				String requestId = null;
+//				try {
+//					requestId = aliyunOss.uploadFile(fileId, fileStream);
+//				} catch (OSSException e) {
+//					e.printStackTrace();
+//					log.error("uploadFile, {}", e);
+//					queue.offer(item);
+//				} catch (ClientException e) {
+//					e.printStackTrace();
+//					log.error("uploadFile, {}", e);
+//					queue.offer(item);
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//					log.error("uploadFile, {}", e);
+//					queue.offer(item);
+//				}
+//				log.info("aliyun oss return the requestId: {}", requestId);
+//				fileDealSuccess = true;
+//			}
+//
+//			try {
+//				if (fileStream != null)
+//					fileStream.close();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				log.error("file stream close, {}", e);
+//			}
+//			try {
+//				if (ftpClient != null)
+//					ftpClient.completeDownload();
+//				ftpClient.deleteFtpFile(fileName);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				log.error("FTP download file finish, {}", e);
+//			}
+//
+//			// 4.记下文件状态，同时删除FTP服务器的文件
+//			if (fileDealSuccess) {
+//				log.info("file deal success. fileName = {}, fileId = {}", fileName, fileId);
+//			} else {
+//				log.info("file deal fail, fileName = {}, fileId = {}", fileName, fileId);
+//			}
+//		}
+//
+//		// 5. 文件处理完成，关闭连接
+//		try {
+//			ftpClient.disconnect();
+//			aliyunOss.shutdown();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			log.error("关闭连接, {}", e);
+//		}
+//	}
 
 }

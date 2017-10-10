@@ -120,6 +120,22 @@ public class AliyunOssUtil {
 		return putObjectResult.getRequestId();
 	}
 	
+	public String uploadFile(InputStream inputStream, String fileName, long fileSize) throws OSSException, ClientException, FileNotFoundException {
+		
+		ObjectMetadata objectMetadata=new ObjectMetadata();  
+	    objectMetadata.setContentLength(fileSize);  
+	    objectMetadata.setCacheControl("no-cache");  
+	    objectMetadata.setHeader("Pragma", "no-cache");  
+	    objectMetadata.setContentType(contentType(fileName.substring(fileName.lastIndexOf(".")+1)));  
+	    objectMetadata.setContentDisposition("inline;filename=" + fileName);
+	    
+	    String remotePath = null;
+	    
+		PutObjectResult putObjectResult = ossClient.putObject(bucketName,remotePath + fileName, inputStream, objectMetadata);
+		
+		return putObjectResult.getRequestId();
+	}
+	
 	public void shutdown() {
 		if(ossClient != null) {
 			ossClient.shutdown();
